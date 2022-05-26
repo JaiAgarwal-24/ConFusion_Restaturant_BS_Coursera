@@ -30,8 +30,9 @@
                     <li class="nav-item"><a class="nav-link" href="#"><span class="fa fa-list fa-lg"></span> Menu</a></li>
                     <li class="nav-item"><a class="nav-link" href="./contactus.html"><span class="fa fa-address-card fa-lg"></span> Contact</a></li>
                 </ul>
-                <span class="navbar-text">
-                    <a data-toggle="modal" data-target="#loginModal">
+                <span id="login" class="navbar-text">
+                    <!-- <a data-toggle="modal" data-target="#loginModal"> -->
+                    <a>
                         <span class="fa fa-sign-in"></span> Login
                     </a>
                 </span>
@@ -89,7 +90,8 @@
                 <div class="col-12 col-sm align-self-center">
                     <!-- <a class="btn btn-warning btn-block text-white" data-toggle="tooltip" data-html="true" title="Or Call us at <br><strong>+91 123456789</strong>" 
                     data-placement="bottom" href="#reservation">Reserve Table</a> -->
-                    <a class="btn btn-warning btn-block text-white" data-toggle="modal" data-target="#reservation">Reserve Table</a>
+                    <!-- <a class="btn btn-warning btn-block text-white" data-toggle="modal" data-target="#reservation">Reserve Table</a> -->
+                    <a id="reservationBtn" class="btn btn-warning btn-block text-white">Reserve Table</a>
                 </div>
             </div>
         </div>
@@ -378,6 +380,18 @@
                 }
             });
         });
+
+        $(document).ready(function() {
+            $('#login').click(function() {
+                $('#loginModal').modal('show');
+            });
+        });
+
+        $(document).ready(function() {
+            $('#reservationBtn').click(function() {
+                $('#reservation').modal('show')
+            })
+        })
     </script>
 </body>
 

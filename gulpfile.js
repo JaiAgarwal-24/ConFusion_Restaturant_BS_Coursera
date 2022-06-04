@@ -1,9 +1,17 @@
 'use strict';
 
 var gulp = require('gulp'),
-    browserSync = require('browser-sync');
+    sass = require('gulp-sass')(require('sass')),
+    browserSync = require('browser-sync'),
+    del = require('del'),
+    imagemin = require('gulp-imagemin'),
+    uglify = require('gulp-uglify'),
+    usemin = require('gulp-usemin'),
+    rev = require('gulp-rev'),
+    cleanCSS = require('gulp-clean-css'),
+    flatmap = require('gulp-flatmap'),
+    htmlmin = require('gulp-htmlmin');
 
-const sass = require('gulp-sass')(require('sass'));
 
 gulp.task('sass', function () {
     return gulp.src('./css/*.scss')
@@ -30,7 +38,41 @@ gulp.task('browser-sync', function () {
     });
 });
 
-gulp.task('default', gulp.parallel('browser-sync', 'sass:watch'))
-//  function () {
-//     gulp.start('sass:watch');
-// }));
+gulp.task('default', gulp.parallel('browser-sync', 'sass:watch'));
+
+gulp.task('clean', function () {
+    return del (['dist']);
+});
+
+gulp.task('copyfonts', async function () {
+    gulp.src('./node_modules/font-awesome/fonts/**/*.{ttf,woff,eof,svg}*')
+    .pipe(gulp.dest('./dist/fonts'));
+});
+
+gulp.task('imagemin', function () {
+    return gulp.src('img/*.{png,jpg,gif}')
+    .pipe(imagemin({optimizationLevel: 3, progressive: true, interLaced: true}))
+    .pipe(gulp.dest('dist/img'));
+});
+
+gulp.task('usemin', function() {
+    return gulp.src('./*html')
+    .pipe(flatmap(function (stream, file) {
+        return stream
+        .pipe(usemin({
+            css: [rev()],
+            html: [function() {
+                return htmlmin({ collapsewhitespace: true})
+            }],
+            js: [uglify(), rev()],
+            inlinejs: [uglify()],
+            inlinecss: [cleanCSS(), 'concat']
+        }))
+    }))
+    .pipe(gulp.dest('dist/'))
+});
+
+gulp.task('build', gulp.series('clean', gulp.parallel('copyfonts', 'imagemin', 'usemin')));
+// ['clean'], function () {
+//     gulp.start('copyfonts', 'imagemin');
+// });
